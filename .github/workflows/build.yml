@@ -1,0 +1,17 @@
+name: build
+
+on:
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'SSH connection to Actions'
+        required: false
+        default: 'false'
+  push:
+    tags:
+      - '*'
+  pull_request:
+
+jobs:
+  build:
+    uses: portapps/.github/.github/workflows/app-build.yml@master

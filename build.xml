@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Joplin" basedir=".">
+
+  <dirname property="app.basedir" file="${ant.file.Joplin}"/>
+  <property name="build.properties" value="${app.basedir}/build.properties"/>
+  <property file="${build.properties}"/>
+
+  <!-- Load Portapps core build -->
+  <property name="core.basedir" location="${app.basedir}\${core.dir}"/>
+  <fail unless="core.basedir" message="Core directory '${core.basedir}' not found in ${core.basedir}"/>
+  <echo message="Core found in ${core.basedir}" level="debug"/>
+
+  <!-- Import build-app.xml  -->
+  <import file="${core.basedir}\.build\build-app.xml"/>
+
+  <!-- Targets -->
+  <target name="release" depends="release.app" description="Release"/>
+
+  <target name="prepare" depends="load.lib.asar">
+    <echo message="Preparing release..."/>
+
+    <if>
+      <equals arg1="${app.type}" arg2="archive"/>
+      <then>
+        <echo message="Extracting embedded ${atf.arch} archive"/>
+        <property name="extract.path2" value="${tmp.path}\extract2"/>
+        <if>
+          <equals arg1="${atf.arch}" arg2="win32"/>
+          <then>
+            <sevenzip-ax src="${extract.path}\$PLUGINSDIR\app-32.7z" dest="${extract.path2}"/>
+          </then>
+          <else>
+            <sevenzip-ax src="${extract.path}\$PLUGINSDIR\app-64.7z" dest="${extract.path2}"/>
+          </else>
+        </if>
+
+        <delete dir="${extract.path}"/>
+        <move todir="${extract.path}">
+          <fileset dir="${extract.path2}" defaultexcludes="no"/>
+        </move>
+      </then>
+    </if>
+
+    <echo message="Current innosetup.app: ${innosetup.app}"/>
+    <echo message="Current app.type: ${app.type}"/>
+    <!-- set cur app path -->
+    <if>
+      <equals arg1="${app.type}" arg2="innosetup"/>
+      <then>
+        <property name="curpath" value="${extract.path}\${innosetup.app}"/>
+      </then>
+      <else>
+        <property name="curpath" value="${extract.path}"/>
+      </else>
+    </if>
+
+    <echo message="Current app path : ${curpath}"/>
+
+
+    <!-- delete locales files -->
+    <if>
+      <istrue value="${electron.deletelocales}"/>
+      <then>
+        <delete dir="${curpath}\resources\locales\ar-SA.lproj"/>
+        <!-- <delete dir="${curpath}\resources\locales\Base.lproj"/> -->
+        <delete dir="${curpath}\resources\locales\ca-ES.lproj"/>
+        <delete dir="${curpath}\resources\locales\cs-CZ.lproj"/>
+        <delete dir="${curpath}\resources\locales\da-DK.lproj"/>
+        <delete dir="${curpath}\resources\locales\de-CH.lproj"/>
+        <delete dir="${curpath}\resources\locales\de-DE.lproj"/>
+        <delete dir="${curpath}\resources\locales\el-GR.lproj"/>
+        <delete dir="${curpath}\resources\locales\es-ES.lproj"/>
+        <delete dir="${curpath}\resources\locales\fa-IR.lproj"/>
+        <delete dir="${curpath}\resources\locales\fr-FR.lproj"/>
+        <delete dir="${curpath}\resources\locales\gl-ES.lproj"/>
+        <delete dir="${curpath}\resources\locales\he-IL.lproj"/>
+        <delete dir="${curpath}\resources\locales\hi-IN.lproj"/>
+        <delete dir="${curpath}\resources\locales\hi_IN.lproj"/>
+        <delete dir="${curpath}\resources\locales\hr-HR.lproj"/>
+        <delete dir="${curpath}\resources\locales\hu-HU.lproj"/>
+        <delete dir="${curpath}\resources\locales\id-ID.lproj"/>
+        <delete dir="${curpath}\resources\locales\it-IT.lproj"/>
+        <delete dir="${curpath}\resources\locales\ja-JP.lproj"/>
+        <delete dir="${curpath}\resources\locales\ko-KR.lproj"/>
+        <delete dir="${curpath}\resources\locales\ms-MY.lproj"/>
+        <delete dir="${curpath}\resources\locales\nb-NO.lproj"/>
+        <delete dir="${curpath}\resources\locales\nl-NL.lproj"/>
+        <delete dir="${curpath}\resources\locales\nn-NO.lproj"/>
+        <delete dir="${curpath}\resources\locales\pl-PL.lproj"/>
+        <delete dir="${curpath}\resources\locales\pt-BR.lproj"/>
+        <delete dir="${curpath}\resources\locales\pt-PT.lproj"/>
+        <delete dir="${curpath}\resources\locales\ro-RO.lproj"/>
+        <delete dir="${curpath}\resources\locales\ru-RU.lproj"/>
+        <delete dir="${curpath}\resources\locales\sk-SK.lproj"/>
+        <delete dir="${curpath}\resources\locales\sl-SI.lproj"/>
+        <delete dir="${curpath}\resources\locales\sv-SE.lproj"/>
+        <delete dir="${curpath}\resources\locales\th-TH.lproj"/>
+        <delete dir="${curpath}\resources\locales\tr-TR.lproj"/>
+        <delete dir="${curpath}\resources\locales\uk-UA.lproj"/>
+        <delete dir="${curpath}\resources\locales\vi-VN.lproj"/>
+        <!-- <delete dir="${extract.path}\resources\locales\zh-Hans.lproj"/> -->
+        <delete dir="${extract.path}\resources\locales\zh-Hant.lproj"/>
+
+        <delete file="${curpath}\locales\af.pak"/>
+        <delete file="${curpath}\locales\am.pak"/>
+        <delete file="${curpath}\locales\ar.pak"/>
+        <delete file="${curpath}\locales\bg.pak"/>
+        <delete file="${curpath}\locales\bn.pak"/>
+        <delete file="${curpath}\locales\ca.pak"/>
+        <delete file="${curpath}\locales\cs.pak"/>
+        <delete file="${curpath}\locales\da.pak"/>
+        <delete file="${curpath}\locales\de.pak"/>
+        <delete file="${curpath}\locales\el.pak"/>
+        <delete file="${curpath}\locales\en-GB.pak"/>
+        <!-- <delete file="${curpath}\locales\en-US.pak"/> -->
+        <delete file="${curpath}\locales\es-419.pak"/>
+        <delete file="${curpath}\locales\es.pak"/>
+        <delete file="${curpath}\locales\et.pak"/>
+        <delete file="${curpath}\locales\fa.pak"/>
+        <delete file="${curpath}\locales\fi.pak"/>
+        <delete file="${curpath}\locales\fil.pak"/>
+        <delete file="${curpath}\locales\fr.pak"/>
+        <delete file="${curpath}\locales\gu.pak"/>
+        <delete file="${curpath}\locales\he.pak"/>
+        <delete file="${curpath}\locales\hi.pak"/>
+        <delete file="${curpath}\locales\hr.pak"/>
+        <delete file="${curpath}\locales\hu.pak"/>
+        <delete file="${curpath}\locales\id.pak"/>
+        <delete file="${curpath}\locales\it.pak"/>
+        <delete file="${curpath}\locales\ja.pak"/>
+        <delete file="${curpath}\locales\kn.pak"/>
+        <delete file="${curpath}\locales\ko.pak"/>
+        <delete file="${curpath}\locales\lt.pak"/>
+        <delete file="${curpath}\locales\lv.pak"/>
+        <delete file="${curpath}\locales\ml.pak"/>
+        <delete file="${curpath}\locales\mr.pak"/>
+        <delete file="${curpath}\locales\ms.pak"/>
+        <delete file="${curpath}\locales\nb.pak"/>
+        <delete file="${curpath}\locales\nl.pak"/>
+        <delete file="${curpath}\locales\pl.pak"/>
+        <delete file="${curpath}\locales\pt-BR.pak"/>
+        <delete file="${curpath}\locales\pt-PT.pak"/>
+        <delete file="${curpath}\locales\ro.pak"/>
+        <delete file="${curpath}\locales\ru.pak"/>
+        <delete file="${curpath}\locales\sk.pak"/>
+        <delete file="${curpath}\locales\sl.pak"/>
+        <delete file="${curpath}\locales\sr.pak"/>
+        <delete file="${curpath}\locales\sv.pak"/>
+        <delete file="${curpath}\locales\sw.pak"/>
+        <delete file="${curpath}\locales\ta.pak"/>
+        <delete file="${curpath}\locales\te.pak"/>
+        <delete file="${curpath}\locales\th.pak"/>
+        <delete file="${curpath}\locales\tr.pak"/>
+        <delete file="${curpath}\locales\uk.pak"/>
+        <delete file="${curpath}\locales\ur.pak"/>
+        <delete file="${curpath}\locales\vi.pak"/>
+        <!-- <delete file="${curpath}\locales\zh-CN.pak"/> -->
+        <delete file="${curpath}\locales\zh-TW.pak"/>
+      </then>
+    </if>
+
+    <!-- extract appasar for unpack -->
+    <if>
+      <istrue value="${electron.extract.appasar}"/>
+      <then>
+        <echo message="Extracting app.asar..."/>
+        <echo message="start extract app.asar ..."/>
+        <exec executable="asar.cmd" failonerror="false">
+          <arg value="e"/>
+          <arg value="${curpath}\resources\app.asar"/>
+          <arg value="${curpath}\resources\app"/>
+        </exec>
+        <echo message="Removing app.asar..."/>
+        <delete file="${curpath}\resources\app.asar"/>
+      </then>
+    </if>
+
+    <!-- Delete Update.exe app-update.yml -->
+    <if>
+      <and>
+        <istrue value="${electron.disableautoupdate}"/>
+      </and>
+      <then>
+        <echo message="Delete Update.exe ..."/>
+        <delete file="${curpath}\Update.exe"/>
+
+        <echo message="Delete app-update.yml ..."/>
+        <delete file="${curpath}\resources\app-update.yml"/>
+      </then>
+    </if>
+
+  </target>
+
+</project>
